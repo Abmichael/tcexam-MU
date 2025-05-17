@@ -17,7 +17,7 @@ admin/config/
 composer.lock
 ecs.php
 phpunit.xml
-public/config/
+# public/config/
 rector.php
 shared/config/
 target

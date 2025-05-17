@@ -72,7 +72,7 @@ define('K_SITE_ICON', '../../favicon.ico');
 /**
  * Theme for the public area
  */
-define('K_PUBLIC_THEME', 'default');
+define('K_PUBLIC_THEME', 'picoman');
 
 /**
  * Path to public CSS stylesheet for LTR languages.

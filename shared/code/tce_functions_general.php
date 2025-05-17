@@ -78,10 +78,9 @@ function F_zero_to_null($num)
 {
     global $db;
     require_once('../../shared/code/tce_db_dal.php');
-    if ($num == 0) {
+    if ($num === 0 || $num === '0' || $num === '' || $num === null) {
         return 'NULL';
     }
-
     return F_escape_sql($db, $num);
 }
 

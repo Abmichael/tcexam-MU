@@ -51,22 +51,22 @@ if ((isset($menu_mode) && $menu_mode == 'upload') && $_FILES['userfile']['name']
         $qimp = false;
         switch ($type) {
             case 1: {
-                // standard TCExam XML format
-                require_once('../code/tce_class_import_xml.php');
-                $qimp = new XMLQuestionImporter(K_PATH_CACHE . $uploadedfile);
-                break;
-            }
+                    // standard TCExam XML format
+                    require_once('../code/tce_class_import_xml.php');
+                    $qimp = new XMLQuestionImporter(K_PATH_CACHE . $uploadedfile);
+                    break;
+                }
             case 2: {
-                // standard TCExam TSV format
-                $qimp = F_TSVQuestionImporter(K_PATH_CACHE . $uploadedfile);
-                break;
-            }
+                    // standard TCExam TSV format
+                    $qimp = F_TSVQuestionImporter(K_PATH_CACHE . $uploadedfile);
+                    break;
+                }
             case 3: {
-                // Custom TCExam XML format
-                require_once('../code/tce_import_custom.php');
-                $qimp = new CustomQuestionImporter(K_PATH_CACHE . $uploadedfile);
-                break;
-            }
+                    // Custom TCExam XML format
+                    require_once('../code/tce_import_custom.php');
+                    $qimp = new CustomQuestionImporter(K_PATH_CACHE . $uploadedfile);
+                    break;
+                }
         }
 
         if ($qimp) {
@@ -182,30 +182,30 @@ function F_TSVQuestionImporter($tsvfile)
         // get user data into array
         switch ($qdata[0]) {
             case 'M': { // MODULE
-                $current_module_id = 0;
-                if (! isset($qdata[2]) || empty($qdata[2])) {
-                    break;
-                }
+                    $current_module_id = 0;
+                    if (! isset($qdata[2]) || empty($qdata[2])) {
+                        break;
+                    }
 
-                $module_enabled = (int) $qdata[1];
-                $module_name = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
-                // check if this module already exist
-                $sql = 'SELECT module_id
+                    $module_enabled = (int) $qdata[1];
+                    $module_name = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
+                    // check if this module already exist
+                    $sql = 'SELECT module_id
 					FROM ' . K_TABLE_MODULES . '
 					WHERE module_name=\'' . $module_name . '\'
 					LIMIT 1';
-                if ($r = F_db_query($sql, $db)) {
-                    if ($m = F_db_fetch_array($r)) {
-                        // get existing module ID
-                        if (! F_isAuthorizedUser(K_TABLE_MODULES, 'module_id', $m['module_id'], 'module_user_id')) {
-                            // unauthorized user
-                            $current_module_id = 0;
+                    if ($r = F_db_query($sql, $db)) {
+                        if ($m = F_db_fetch_array($r)) {
+                            // get existing module ID
+                            if (! F_isAuthorizedUser(K_TABLE_MODULES, 'module_id', $m['module_id'], 'module_user_id')) {
+                                // unauthorized user
+                                $current_module_id = 0;
+                            } else {
+                                $current_module_id = $m['module_id'];
+                            }
                         } else {
-                            $current_module_id = $m['module_id'];
-                        }
-                    } else {
-                        // insert new module
-                        $sql = 'INSERT INTO ' . K_TABLE_MODULES . ' (
+                            // insert new module
+                            $sql = 'INSERT INTO ' . K_TABLE_MODULES . ' (
 							module_name,
 							module_enabled,
 							module_user_id
@@ -214,49 +214,49 @@ function F_TSVQuestionImporter($tsvfile)
 							\'' . $module_enabled . '\',
 							\'' . $_SESSION['session_user_id'] . '\'
 							)';
-                        if (! $r = F_db_query($sql, $db)) {
-                            F_display_db_error();
-                        } else {
-                            // get new module ID
-                            $current_module_id = F_db_insert_id($db, K_TABLE_MODULES, 'module_id');
+                            if (! $r = F_db_query($sql, $db)) {
+                                F_display_db_error();
+                            } else {
+                                // get new module ID
+                                $current_module_id = F_db_insert_id($db, K_TABLE_MODULES, 'module_id');
+                            }
                         }
+                    } else {
+                        F_display_db_error();
                     }
-                } else {
-                    F_display_db_error();
-                }
 
-                break;
-            }
-            case 'S': { // SUBJECT
-                $current_subject_id = 0;
-                if ($current_module_id === 0) {
-                    return;
-                }
-
-                if (! isset($qdata[2]) || empty($qdata[2])) {
                     break;
                 }
+            case 'S': { // SUBJECT
+                    $current_subject_id = 0;
+                    if ($current_module_id === 0) {
+                        return;
+                    }
 
-                $subject_enabled = (int) $qdata[1];
-                $subject_name = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
-                $subject_description = '';
-                if (isset($qdata[3])) {
-                    $subject_description = F_empty_to_null(F_tsv_to_text($qdata[3]));
-                }
+                    if (! isset($qdata[2]) || empty($qdata[2])) {
+                        break;
+                    }
 
-                // check if this subject already exist
-                $sql = 'SELECT subject_id
+                    $subject_enabled = (int) $qdata[1];
+                    $subject_name = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
+                    $subject_description = '';
+                    if (isset($qdata[3])) {
+                        $subject_description = F_empty_to_null(F_tsv_to_text($qdata[3]));
+                    }
+
+                    // check if this subject already exist
+                    $sql = 'SELECT subject_id
 					FROM ' . K_TABLE_SUBJECTS . '
 					WHERE subject_name=\'' . $subject_name . '\'
 						AND subject_module_id=' . $current_module_id . '
 					LIMIT 1';
-                if ($r = F_db_query($sql, $db)) {
-                    if ($m = F_db_fetch_array($r)) {
-                        // get existing subject ID
-                        $current_subject_id = $m['subject_id'];
-                    } else {
-                        // insert new subject
-                        $sql = 'INSERT INTO ' . K_TABLE_SUBJECTS . ' (
+                    if ($r = F_db_query($sql, $db)) {
+                        if ($m = F_db_fetch_array($r)) {
+                            // get existing subject ID
+                            $current_subject_id = $m['subject_id'];
+                        } else {
+                            // insert new subject
+                            $sql = 'INSERT INTO ' . K_TABLE_SUBJECTS . ' (
 							subject_name,
 							subject_description,
 							subject_enabled,
@@ -269,175 +269,180 @@ function F_TSVQuestionImporter($tsvfile)
 							\'' . $_SESSION['session_user_id'] . '\',
 							' . $current_module_id . '
 							)';
-                        if (! $r = F_db_query($sql, $db)) {
-                            F_display_db_error();
-                        } else {
-                            // get new subject ID
-                            $current_subject_id = F_db_insert_id($db, K_TABLE_SUBJECTS, 'subject_id');
+                            if (! $r = F_db_query($sql, $db)) {
+                                F_display_db_error();
+                            } else {
+                                // get new subject ID
+                                $current_subject_id = F_db_insert_id($db, K_TABLE_SUBJECTS, 'subject_id');
+                            }
                         }
+                    } else {
+                        F_display_db_error();
                     }
-                } else {
-                    F_display_db_error();
-                }
 
-                break;
-            }
-            case 'Q': { // QUESTION
-                $current_question_id = 0;
-                if ($current_module_id === 0 || $current_subject_id === 0) {
-                    return;
-                }
-
-                if (! isset($qdata[5])) {
                     break;
                 }
-
-                $question_enabled = (int) $qdata[1];
-                $question_description = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
-                $question_explanation = F_empty_to_null(F_tsv_to_text($qdata[3]));
-                $question_type = $qtype[$qdata[4]];
-                $question_difficulty = (int) $qdata[5];
-                $question_position = isset($qdata[6]) ? F_zero_to_null($qdata[6]) : F_zero_to_null(0);
-
-                $question_timer = isset($qdata[7]) ? (int) $qdata[7] : 0;
-
-                $question_fullscreen = isset($qdata[8]) ? (int) $qdata[8] : 0;
-
-                $question_inline_answers = isset($qdata[9]) ? (int) $qdata[9] : 0;
-
-                $question_auto_next = isset($qdata[10]) ? (int) $qdata[10] : 0;
-
-                // check if this question already exist
-                $sql = 'SELECT question_id
-					FROM ' . K_TABLE_QUESTIONS . '
-					WHERE ';
-                if (K_DATABASE_TYPE == 'ORACLE') {
-                    $sql .= "dbms_lob.instr(question_description,'" . $question_description . "',1,1)>0";
-                } elseif (K_DATABASE_TYPE === 'MYSQL' && K_MYSQL_QA_BIN_UNIQUITY) {
-                    $sql .= "question_description='" . $question_description . "' COLLATE utf8_bin";
-                } else {
-                    $sql .= "question_description='" . $question_description . "'";
-                }
-
-                $sql .= ' AND question_subject_id=' . $current_subject_id . ' LIMIT 1';
-                if ($r = F_db_query($sql, $db)) {
-                    if ($m = F_db_fetch_array($r)) {
-                        // get existing question ID
-                        $current_question_id = $m['question_id'];
-                        continue 2;
-                    }
-                } else {
-                    F_display_db_error();
-                }
-
-                if (K_DATABASE_TYPE === 'MYSQL') {
-                    // this section is to avoid the problems on MySQL string comparison
-                    $maxkey = 240;
-                    $strkeylimit = min($maxkey, strlen($question_description));
-                    $stop = $maxkey / 3;
-                    while (in_array(md5(strtolower(substr($current_subject_id . $question_description, 0, $strkeylimit))), $questionhash) && $stop > 0) {
-                        // a similar question was already imported, so we change it a little bit to avoid duplicate keys
-                        $question_description = '_' . $question_description;
-                        $strkeylimit = min($maxkey, ($strkeylimit + 1));
-                        --$stop; // variable used to avoid infinite loop
-                    }
-
-                    if ($stop == 0) {
-                        F_print_error('ERROR', 'Unable to get unique question ID');
+            case 'Q': { // QUESTION
+                    $current_question_id = 0;
+                    if ($current_module_id === 0 || $current_subject_id === 0) {
                         return;
                     }
-                }
 
-                $sql = 'START TRANSACTION';
-                if (! $r = F_db_query($sql, $db)) {
-                    F_display_db_error();
-                }
-
-                // insert question
-                $sql = 'INSERT INTO ' . K_TABLE_QUESTIONS . ' (
-					question_subject_id,
-					question_description,
-					question_explanation,
-					question_type,
-					question_difficulty,
-					question_enabled,
-					question_position,
-					question_timer,
-					question_fullscreen,
-					question_inline_answers,
-					question_auto_next
-					) VALUES (
-					' . $current_subject_id . ',
-					\'' . $question_description . '\',
-					' . $question_explanation . ',
-					\'' . $question_type . '\',
-					\'' . $question_difficulty . '\',
-					\'' . $question_enabled . '\',
-					' . $question_position . ',
-					\'' . $question_timer . '\',
-					\'' . $question_fullscreen . '\',
-					\'' . $question_inline_answers . '\',
-					\'' . $question_auto_next . '\'
-					)';
-                if (! $r = F_db_query($sql, $db)) {
-                    F_display_db_error(false);
-                } else {
-                    // get new question ID
-                    $current_question_id = F_db_insert_id($db, K_TABLE_QUESTIONS, 'question_id');
-                    if (K_DATABASE_TYPE === 'MYSQL') {
-                        $questionhash[] = md5(strtolower(substr($current_subject_id . $question_description, 0, $strkeylimit)));
+                    if (! isset($qdata[5])) {
+                        break;
                     }
-                }
 
-                $sql = 'COMMIT';
-                if (! $r = F_db_query($sql, $db)) {
-                    F_display_db_error();
-                }
+                    $question_enabled = (int) $qdata[1];
+                    $question_description = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
+                    $question_explanation = F_empty_to_null(F_tsv_to_text($qdata[3]));
+                    $question_type = $qtype[$qdata[4]];
+                    $question_difficulty = (int) $qdata[5];
+                    $question_position = isset($qdata[6]) ? F_zero_to_null($qdata[6]) : F_zero_to_null(0);
 
-                break;
-            }
-            case 'A': { // ANSWER
-                $current_answer_id = 0;
-                if ($current_module_id === 0 || $current_subject_id === 0 || $current_question_id === 0) {
-                    return;
-                }
+                    // echo 'Value of $question_position: [' . $question_position . ']<br />' . K_NEWLINE;
+                    // echo 'Is $question_position (PHP variable) strictly null? ' . ($question_position === null ? 'Yes' : 'No') . '<br />' . K_NEWLINE;
+                    // echo 'Is (string)$question_position an empty string ""? ' . (((string)$question_position) === '' ? 'Yes' : 'No') . '<br />' . K_NEWLINE;
+                    // echo 'Is $question_position the string "NULL"? ' . ($question_position === 'NULL' ? 'Yes' : 'No') . '<br />' . K_NEWLINE;
 
-                if (! isset($qdata[4])) {
-                    break;
-                }
+                    $question_timer = isset($qdata[7]) ? (int) $qdata[7] : 0;
 
-                $answer_enabled = (int) $qdata[1];
-                $answer_description = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
-                $answer_explanation = F_empty_to_null(F_tsv_to_text($qdata[3]));
-                $answer_isright = (int) $qdata[4];
-                $answer_position = isset($qdata[5]) ? F_zero_to_null($qdata[5]) : F_zero_to_null(0);
+                    $question_fullscreen = isset($qdata[8]) ? (int) $qdata[8] : 0;
 
-                $answer_keyboard_key = isset($qdata[6]) ? F_empty_to_null(F_tsv_to_text($qdata[6])) : F_empty_to_null('');
+                    $question_inline_answers = isset($qdata[9]) ? (int) $qdata[9] : 0;
 
-                // check if this answer already exist
-                $sql = 'SELECT answer_id
-					FROM ' . K_TABLE_ANSWERS . '
+                    $question_auto_next = isset($qdata[10]) ? (int) $qdata[10] : 0;
+
+                    // check if this question already exist
+                    $sql = 'SELECT question_id
+					FROM ' . K_TABLE_QUESTIONS . '
 					WHERE ';
-                if (K_DATABASE_TYPE == 'ORACLE') {
-                    $sql .= "dbms_lob.instr(answer_description, '" . $answer_description . "',1,1)>0";
-                } elseif (K_DATABASE_TYPE === 'MYSQL' && K_MYSQL_QA_BIN_UNIQUITY) {
-                    $sql .= "answer_description='" . $answer_description . "' COLLATE utf8_bin";
-                } else {
-                    $sql .= "answer_description='" . $answer_description . "'";
-                }
-
-                $sql .= ' AND answer_question_id=' . $current_question_id . ' LIMIT 1';
-                if ($r = F_db_query($sql, $db)) {
-                    if ($m = F_db_fetch_array($r)) {
-                        // get existing subject ID
-                        $current_answer_id = $m['answer_id'];
+                    if (K_DATABASE_TYPE == 'ORACLE') {
+                        $sql .= "dbms_lob.instr(question_description,'" . $question_description . "',1,1)>0";
+                    } elseif (K_DATABASE_TYPE === 'MYSQL' && K_MYSQL_QA_BIN_UNIQUITY) {
+                        $sql .= "question_description='" . $question_description . "' COLLATE utf8_bin";
                     } else {
-                        $sql = 'START TRANSACTION';
-                        if (! $r = F_db_query($sql, $db)) {
-                            F_display_db_error();
+                        $sql .= "question_description='" . $question_description . "'";
+                    }
+
+                    $sql .= ' AND question_subject_id=' . $current_subject_id . ' LIMIT 1';
+                    if ($r = F_db_query($sql, $db)) {
+                        if ($m = F_db_fetch_array($r)) {
+                            // get existing question ID
+                            $current_question_id = $m['question_id'];
+                            continue 2;
+                        }
+                    } else {
+                        F_display_db_error();
+                    }
+
+                    if (K_DATABASE_TYPE === 'MYSQL') {
+                        // this section is to avoid the problems on MySQL string comparison
+                        $maxkey = 240;
+                        $strkeylimit = min($maxkey, strlen($question_description));
+                        $stop = $maxkey / 3;
+                        while (in_array(md5(strtolower(substr($current_subject_id . $question_description, 0, $strkeylimit))), $questionhash) && $stop > 0) {
+                            // a similar question was already imported, so we change it a little bit to avoid duplicate keys
+                            $question_description = '_' . $question_description;
+                            $strkeylimit = min($maxkey, ($strkeylimit + 1));
+                            --$stop; // variable used to avoid infinite loop
                         }
 
-                        $sql = 'INSERT INTO ' . K_TABLE_ANSWERS . ' (
+                        if ($stop == 0) {
+                            F_print_error('ERROR', 'Unable to get unique question ID');
+                            return;
+                        }
+                    }
+
+                    $sql = 'START TRANSACTION';
+                    if (! $r = F_db_query($sql, $db)) {
+                        F_display_db_error();
+                    }
+
+                    // insert question
+                    $sql = 'INSERT INTO ' . K_TABLE_QUESTIONS . ' (
+                    question_subject_id,
+                    question_description,
+                    question_explanation,
+                    question_type,
+                    question_difficulty,
+                    question_enabled,
+                    question_position,
+                    question_timer,
+                    question_fullscreen,
+                    question_inline_answers,
+                    question_auto_next
+                    ) VALUES (
+                    ' . ($current_subject_id === null ? 'NULL' : $current_subject_id) . ',
+                    ' . ($question_description === null ? 'NULL' : "'" . $question_description . "'") . ',
+                    ' . ($question_explanation === null ? 'NULL' : "'" . $question_explanation . "'") . ',
+                    ' . ($question_type === null ? 'NULL' : "'" . $question_type . "'") . ',
+                    ' . ($question_difficulty === null ? 'NULL' : "'" . $question_difficulty . "'") . ',
+                    ' . ($question_enabled === null ? 'NULL' : "'" . $question_enabled . "'") . ',
+                    ' . ($question_position === null ? 'NULL' : $question_position) . ',
+                    ' . ($question_timer === null ? 'NULL' : "'" . $question_timer . "'") . ',
+                    ' . ($question_fullscreen === null ? 'NULL' : "'" . $question_fullscreen . "'") . ',
+                    ' . ($question_inline_answers === null ? 'NULL' : "'" . $question_inline_answers . "'") . ',
+                    ' . ($question_auto_next === null ? 'NULL' : "'" . $question_auto_next . "'") . '
+                    )';
+                    if (! $r = F_db_query($sql, $db)) {
+                        F_display_db_error(false);
+                    } else {
+                        // get new question ID
+                        $current_question_id = F_db_insert_id($db, K_TABLE_QUESTIONS, 'question_id');
+                        if (K_DATABASE_TYPE === 'MYSQL') {
+                            $questionhash[] = md5(strtolower(substr($current_subject_id . $question_description, 0, $strkeylimit)));
+                        }
+                    }
+
+                    $sql = 'COMMIT';
+                    if (! $r = F_db_query($sql, $db)) {
+                        F_display_db_error();
+                    }
+
+                    break;
+                }
+            case 'A': { // ANSWER
+                    $current_answer_id = 0;
+                    if ($current_module_id === 0 || $current_subject_id === 0 || $current_question_id === 0) {
+                        return;
+                    }
+
+                    if (! isset($qdata[4])) {
+                        break;
+                    }
+
+                    $answer_enabled = (int) $qdata[1];
+                    $answer_description = F_escape_sql($db, F_tsv_to_text($qdata[2]), false);
+                    $answer_explanation = F_empty_to_null(F_tsv_to_text($qdata[3]));
+                    $answer_isright = (int) $qdata[4];
+                    $answer_position = isset($qdata[5]) ? F_zero_to_null($qdata[5]) : F_zero_to_null(0);
+
+                    $answer_keyboard_key = isset($qdata[6]) ? F_empty_to_null(F_tsv_to_text($qdata[6])) : F_empty_to_null('');
+
+                    // check if this answer already exist
+                    $sql = 'SELECT answer_id
+					FROM ' . K_TABLE_ANSWERS . '
+					WHERE ';
+                    if (K_DATABASE_TYPE == 'ORACLE') {
+                        $sql .= "dbms_lob.instr(answer_description, '" . $answer_description . "',1,1)>0";
+                    } elseif (K_DATABASE_TYPE === 'MYSQL' && K_MYSQL_QA_BIN_UNIQUITY) {
+                        $sql .= "answer_description='" . $answer_description . "' COLLATE utf8_bin";
+                    } else {
+                        $sql .= "answer_description='" . $answer_description . "'";
+                    }
+
+                    $sql .= ' AND answer_question_id=' . $current_question_id . ' LIMIT 1';
+                    if ($r = F_db_query($sql, $db)) {
+                        if ($m = F_db_fetch_array($r)) {
+                            // get existing subject ID
+                            $current_answer_id = $m['answer_id'];
+                        } else {
+                            $sql = 'START TRANSACTION';
+                            if (! $r = F_db_query($sql, $db)) {
+                                F_display_db_error();
+                            }
+
+                            $sql = 'INSERT INTO ' . K_TABLE_ANSWERS . ' (
 							answer_question_id,
 							answer_description,
 							answer_explanation,
@@ -454,25 +459,25 @@ function F_TSVQuestionImporter($tsvfile)
 							' . $answer_position . ',
 							' . $answer_keyboard_key . '
 							)';
-                        if (! $r = F_db_query($sql, $db)) {
-                            F_display_db_error(false);
-                            F_db_query('ROLLBACK', $db);
-                        } else {
-                            // get new answer ID
-                            $current_answer_id = F_db_insert_id($db, K_TABLE_ANSWERS, 'answer_id');
-                        }
+                            if (! $r = F_db_query($sql, $db)) {
+                                F_display_db_error(false);
+                                F_db_query('ROLLBACK', $db);
+                            } else {
+                                // get new answer ID
+                                $current_answer_id = F_db_insert_id($db, K_TABLE_ANSWERS, 'answer_id');
+                            }
 
-                        $sql = 'COMMIT';
-                        if (! $r = F_db_query($sql, $db)) {
-                            F_display_db_error();
+                            $sql = 'COMMIT';
+                            if (! $r = F_db_query($sql, $db)) {
+                                F_display_db_error();
+                            }
                         }
+                    } else {
+                        F_display_db_error();
                     }
-                } else {
-                    F_display_db_error();
-                }
 
-                break;
-            }
+                    break;
+                }
         } // end of switch
     }
 

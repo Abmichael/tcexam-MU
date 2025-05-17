@@ -234,39 +234,40 @@ div.float {
 /* header (logo + timer) ------------ */
 div.header {
     background-color: #003399;
-    border: 0px none;
-    height: 40px;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
+    height: 60px; /* was 40px — give more vertical room */
     width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex; /* use flexbox for better alignment */
+    align-items: center; /* vertical centering */
+    justify-content: space-between; /* space out left/right */
 }
 
 /* header logo ------------ */
 div.header div.left {
-    background-color: #003399;
-    background-image: url(../../images/logo_tcexam_118x25.png);
-    background-position: top;
+    background-color: transparent; /* remove solid bg */
+    background-image: url(../../images/new_logo.png); /* update path */
+    background-position: center;
     background-repeat: no-repeat;
-    border: 0px none;
-    float: right;
-    height: 25px;
-    margin: 4px 0px 0px 4px;
-    padding: 0px 0px 0px 0px;
-    text-align: right;
-    width: 118px;
+    background-size: contain; /* keep circle shape */
+    width: 50px;  /* adjust based on new logo size */
+    height: 50px; /* should match container height */
+    margin: 0 20px; /* some breathing room */
+    float: none; /* let flexbox do the work */
+    text-align: center;
 }
 
 /* header banner ------------ */
 div.header div.right {
-    background-color: #003399;
-    border: 0px none;
-    float: left;
-    height: 25px;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
+    background-color: transparent;
+    width: auto; /* shrink to fit content */
+    height: auto;
+    margin: 0 20px;
+    float: none;
     text-align: left;
-    width: 400px;
 }
+
 
 div.header div.right input{
     background-color: #003399;

@@ -44,12 +44,16 @@
 function F_db_connect($host = 'localhost', $port = '3306', $username = 'root', $password = '', $database = '')
 {
     if (! $db = @mysqli_connect($host, $username, $password, $database, $port)) {
-        return false;
+        echo 'DATABASE CONNECTION FAILED!';
+        exit;
     }
-
-    // set the correct charset encoding
-    mysqli_query($db, "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
-    mysqli_query($db, "SET CHARACTER SET 'utf8'");
+    // Set the charset to utf8
+    if (!mysqli_set_charset($db, 'utf8')) { // Changed 'utf8mb4' to 'utf8'
+        // Log error or handle it appropriately if charset cannot be set
+        // For now, we'll just echo a message, but in production, you'd want to log this.
+        echo 'Error loading character set utf8: '.mysqli_error($db);
+        // Optionally, you might want to exit or throw an exception if charset is critical
+    }
     return $db;
 }
 

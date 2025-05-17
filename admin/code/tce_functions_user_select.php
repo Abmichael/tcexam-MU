@@ -172,7 +172,7 @@ function F_show_select_user($order_field, $orderdir, $firstrow, $rowsperpage, $g
                 echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_firstname'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
                 echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_regnumber'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
                 echo '<td>&nbsp;' . $m['user_level'] . '</td>' . K_NEWLINE;
-                echo '<td>&nbsp;' . htmlspecialchars($m['user_regdate'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td>&nbsp;' . htmlspecialchars($m['user_regdate'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
                 // comma separated list of user's groups
                 $grp = '';
                 $sqlg = 'SELECT *
@@ -404,13 +404,13 @@ function F_show_select_user_popup($order_field, $orderdir, $firstrow, $rowsperpa
                 $jsaction .= "window.opener.document.getElementById('" . $cid . "').onchange();";
                 $jsaction .= 'window.close(); return false;';
                 echo '<tr>' . K_NEWLINE;
-                echo '<td style="text-align:' . $txtalign . ';">&nbsp;<a href="#" onclick="' . $jsaction . '" title="[' . $l['w_select'] . ']">' . htmlspecialchars($m['user_name'], ENT_NOQUOTES, $l['a_meta_charset']) . '</a></td>' . K_NEWLINE;
-                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_lastname'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
-                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_firstname'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
-                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_email'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
-                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_regnumber'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td style="text-align:' . $txtalign . ';">&nbsp;<a href="#" onclick="' . $jsaction . '" title="[' . $l['w_select'] . ']">' . htmlspecialchars($m['user_name'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</a></td>' . K_NEWLINE;
+                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_lastname'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_firstname'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_email'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td style="text-align:' . $txtalign . ';">&nbsp;' . htmlspecialchars($m['user_regnumber'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
                 echo '<td>&nbsp;' . $m['user_level'] . '</td>' . K_NEWLINE;
-                echo '<td>&nbsp;' . htmlspecialchars($m['user_regdate'], ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
+                echo '<td>&nbsp;' . htmlspecialchars($m['user_regdate'] ?? '', ENT_NOQUOTES, $l['a_meta_charset']) . '</td>' . K_NEWLINE;
                 /*
                 // comma separated list of user's groups
                 $grp = '';

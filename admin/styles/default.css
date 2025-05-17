@@ -1137,3 +1137,21 @@ table caption {
   color: #003399;
   margin-bottom: 8px;
 }
+
+textarea {
+  border: 1px solid #003399;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 100%;
+  background-color: #fff;
+  color: #000;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+}
+
+textarea:focus {
+  border-color: #ff8000;
+  box-shadow: 0 0 4px #ff800033;
+}

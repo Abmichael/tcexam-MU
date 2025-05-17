@@ -192,6 +192,14 @@ $menu['tce_menu_modules.php']['sub'] = [
         'key' => '',
         'enabled' => true,
     ],
+    'ai_generate.php' => [
+        'link' => 'tce_ai_generate.php',
+        'title' => isset($l['t_ai_generate']) ? $l['t_ai_generate'] : 'AI Generate',
+        'name' => isset($l['w_ai_generate']) ? $l['w_ai_generate'] : 'AI Generate',
+        'level' => K_AUTH_ADMIN_MODULES,
+        'key' => '',
+        'enabled' => true,
+    ],
     'tce_show_all_questions.php' => [
         'link' => 'tce_show_all_questions.php',
         'title' => $l['t_questions_list'],

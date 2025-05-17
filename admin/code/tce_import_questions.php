@@ -134,6 +134,48 @@ echo '<br />' . K_NEWLINE;
 // show upload button
 F_submit_button('upload', $l['w_upload'], $l['h_submit_file']);
 
+function cache_path(string $fname): string
+{
+    return K_PATH_CACHE . basename($fname);
+}
+
+if (isset($_GET['file']) && isset($_GET['preview'])) {
+    $file   = basename($_GET['file']);          // sanitize
+    $path   = cache_path($file);
+
+    if (is_file($path)) {
+        $counts = ['M' => 0, 'S' => 0, 'Q' => 0, 'A' => 0];
+        if (($fp = fopen($path, 'r')) !== false) {
+            while ($line = fgetcsv($fp, 0, "\t")) {
+                $type = substr($line[0] ?? '', 0, 1);
+                if (isset($counts[$type])) $counts[$type]++;
+            }
+            fclose($fp);
+        }
+        echo '<div class="container">';
+        echo '<h2>Preview of generated questions</h2>';
+        echo "<p>Modules: {$counts['M']}</p>";
+        echo "<p>Subjects: {$counts['S']}</p>";
+        echo "<p>Questions: {$counts['Q']}</p>";
+        echo "<p>Answers: {$counts['A']}</p>";
+        echo '<form method="get">';
+        echo '<input type="hidden" name="file" value="' . htmlspecialchars($file) . '">';
+        echo '<button name="import" value="1">Import Now</button>';
+        echo '</form></div>';
+        exit;
+    }
+}
+
+if (isset($_GET['file']) && isset($_GET['import'])) {
+    $file = basename($_GET['file']);
+    $path = cache_path($file);
+
+    if (is_file($path) && F_TSVQuestionImporter($path)) {
+        F_print_error('MESSAGE', 'Import complete.');
+    }
+}
+
+
 echo '</div>' . K_NEWLINE;
 echo F_getCSRFTokenField() . K_NEWLINE;
 echo '</form>' . K_NEWLINE;

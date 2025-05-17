@@ -92,22 +92,6 @@ a.white:hover {
   color: #ffffff;
 }
 
-a.xmlbutton:link,
-a.xmlbutton:visited {
-  background-color: #d3d3d3;
-  border: 1px solid;
-  border-color: #ffffff #696969 #696969 #ffffff;
-  color: #000000;
-  font-size: 95%;
-  margin: 0px 0px 0px 0px;
-  padding: 2px 4px 2px 4px;
-  text-decoration: none;
-}
-
-a.xmlbutton:hover {
-  background-color: #ddeeff;
-}
-
 acronym.nobox {
   background-color: #f08080;
   border: 1px solid;
@@ -1029,4 +1013,127 @@ ul.menu *:focus + ul {
   top: 45px;
   width: 190px;
   font-size: 90%;
+}
+
+input[type="submit"] {
+  background-color: #003399;
+  color: #ffffff;
+  border: 1px solid #003399;
+  border-radius: 4px;
+  padding: 8px 20px;
+  font-size: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  margin: 0 5px;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus {
+  background-color: #ff8000;
+  color: #ffffff;
+  border-color: #ff8000;
+  outline: none;
+}
+
+a.xmlbutton {
+  display: inline-block;
+  background-color: #d3d3d3;
+  border: 1px solid #696969;
+  color: #000000;
+  font-size: 95%;
+  padding: 6px 16px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+a.xmlbutton:hover,
+a.xmlbutton:focus {
+  background-color: #ddeeff;
+  color: #003399;
+  border-color: #003399;
+  outline: none;
+}
+
+input[type="checkbox"] {
+  accent-color: #003399;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+input[type="text"] {
+  border: 1px solid #003399;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  outline: none;
+}
+
+input[type="text"]:focus {
+  border-color: #ff8000;
+  box-shadow: 0 0 4px #ff800033;
+}
+
+select {
+  border: 1px solid #003399;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 100%;
+  background-color: #fff;
+  color: #000;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #ff8000;
+  box-shadow: 0 0 4px #ff800033;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #f6f6f6;
+  font-size: 95%;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #808080;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+table th {
+  background-color: #ddeeff;
+  color: #003399;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #f0f8ff;
+}
+
+table tr:hover {
+  background-color: #ffe4b2;
+}
+
+table caption {
+  caption-side: top;
+  font-size: 110%;
+  font-weight: bold;
+  color: #003399;
+  margin-bottom: 8px;
 }

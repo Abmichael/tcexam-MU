@@ -423,7 +423,7 @@ echo '<div class="row">' . K_NEWLINE;
 
 // show buttons by case
 if (isset($subject_id) && $subject_id > 0) {
-    echo '<span style="background-color:#999999;">';
+    echo '<span >';
     echo '<input type="checkbox" name="confirmupdate" id="confirmupdate" value="1" title="confirm &rarr; update" />';
     F_submit_button('update', $l['w_update'], $l['h_update']);
     echo '</span>';

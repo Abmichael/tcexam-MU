@@ -1137,7 +1137,7 @@ echo '<input type="hidden" name="test_password" id="test_password" value="' . $t
 
 
 if (isset($test_id) && $test_id > 0) {
-    echo '<span style="background-color:#999999;">';
+    echo '<span >';
     echo '<input type="checkbox" name="confirmupdate" id="confirmupdate" value="1" title="confirm &rarr; update" />';
     F_submit_button('update', $l['w_update'], $l['h_update']);
     echo '</span>';

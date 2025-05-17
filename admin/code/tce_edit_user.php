@@ -533,7 +533,7 @@ echo '<div class="row">' . K_NEWLINE;
 // show buttons by case
 if (isset($user_id) && $user_id > 0) {
     if ($user_level < $_SESSION['session_user_level'] || $user_id == $_SESSION['session_user_id'] || $_SESSION['session_user_level'] >= K_AUTH_ADMINISTRATOR) {
-        echo '<span style="background-color:#999999;">';
+        echo '<span >';
         echo '<input type="checkbox" name="confirmupdate" id="confirmupdate" value="1" title="confirm &rarr; update" />';
         F_submit_button('update', $l['w_update'], $l['h_update']);
         echo '</span>';

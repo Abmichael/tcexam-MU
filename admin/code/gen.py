@@ -4,6 +4,13 @@ import requests
 import json
 import csv
 from typing import List, Dict
+import sys
+import io
+import re
+
+# Set stderr to utf-8 to avoid UnicodeEncodeError on Windows
+if sys.stderr.encoding.lower() != 'utf-8':
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # Constants
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
@@ -120,12 +127,27 @@ Only include one correct answer per question and avoid explanations or text outs
 
     # Extract text and parse JSON
     text_response = content["candidates"][0]["content"]["parts"][0]["text"]
+    # Heuristic: Remove code block markers (backticks, with or without json)
+    code_block_pattern = re.compile(r"^```(?:json)?\s*([\s\S]*?)\s*```$", re.IGNORECASE)
+    match = code_block_pattern.match(text_response.strip())
+    if match:
+        text_response = match.group(1).strip()
+    # Also handle stray backticks at start/end
+    if text_response.startswith('```'):
+        text_response = text_response.lstrip('`').lstrip('json').strip()
+    if text_response.endswith('```'):
+        text_response = text_response.rstrip('`').strip()
     try:
         questions = json.loads(text_response)
         return questions
     except json.JSONDecodeError:
-        print("❌ Could not decode Gemini response as JSON.")
-        print(text_response)
+        # Use ASCII fallback for error symbol to avoid UnicodeEncodeError
+        print("[ERROR] Could not decode Gemini response as JSON.")
+        try:
+            print(text_response)
+        except Exception:
+            # If text_response has encoding issues, print a safe message
+            print("[ERROR] (response contains non-printable characters)")
         return []
 
 # -----------------------------

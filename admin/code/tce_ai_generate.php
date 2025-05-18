@@ -27,17 +27,22 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once('../config/tce_config.php');
 
-    $api_key = getenv('GEMINI_API_KEY') ?: '<YOUR_API_KEY>';
+    $api_key = getenv('GEMINI_API_KEY') ?: '<API_KEY>';
 
     $module      = escapeshellarg($_POST['module']);
     $description = escapeshellarg($_POST['desc']);
     $num_questions = intval($_POST['n']);
 
+    // Create a clean module name for filename (remove special characters)
+    $clean_module_name = preg_replace('/[^a-zA-Z0-9]/', '_', trim($_POST['module']));
+    $date_str = date('Ymd');
+    $output_basename = "{$clean_module_name}_{$date_str}_{$num_questions}.tsv";
+
     $subjects_arr = array_map('trim', explode(',', $_POST['subjects']));
     $subjects_cli = implode(' ', array_map('escapeshellarg', $subjects_arr));
 
     // Use cache folder for output file
-    $output_file = K_PATH_CACHE . 'ai.tsv';
+    $output_file = K_PATH_CACHE . $output_basename;
 
     $python = '"python"';   // adjust if different
     $script = __DIR__ . DIRECTORY_SEPARATOR . 'gen.py';
@@ -58,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die('Generation failed — check logs.');
     }
 
-    $basename = basename($output_file);
+    $basename = basename($output_file); // This is already $output_basename
 
     // If user requested download (or always, as per prompt), push file for download
     if (isset($_GET['download']) || true) { // always download for now
